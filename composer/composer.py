@@ -32,6 +32,20 @@ class ImageComposer:
             canvas.paste(img.convert("RGBA"), off)
             return canvas
 
+        def tile_on_canvas(img: Image.Image, dim: int) -> Image.Image:
+            """Tiles image across a larger canvas, ensuring it is centered."""
+            canvas = Image.new("RGBA", (dim, dim), (255, 255, 255, 0))
+            w, h = img.size
+            
+            # Start tiling such that one tile is perfectly centered on the canvas
+            start_x = ((dim - w) // 2) % w - w
+            start_y = ((dim - h) // 2) % h - h
+            
+            for x in range(start_x, dim, w):
+                for y in range(start_y, dim, h):
+                    canvas.paste(img.convert("RGBA"), (x, y))
+            return canvas
+
         # Use the same canvas size for both images.
         qr_canvas = center_on_canvas(qr_img, canvas_dim)
         
@@ -66,7 +80,7 @@ class ImageComposer:
                 pattern_buffer = qr_gen.generate(shuffled_text, pattern_config)
                 # Keep RGBA for pattern so we can align transparency
                 raw_pattern = Image.open(pattern_buffer).convert("RGBA")
-                pattern_canvas = center_on_canvas(raw_pattern, canvas_dim)
+                pattern_canvas = tile_on_canvas(raw_pattern, canvas_dim)
                 
             # Add heart lobes.
             # Pass unrotated canvas to HeartProcessor.

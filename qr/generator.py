@@ -10,13 +10,6 @@ class QRCodeGenerator(IQRGenerator):
     def generate(self, data: str, config: QRConfig = QRConfig()) -> io.BytesIO:
         """Generates a QR code image buffer."""
         
-        Args:
-            data: Content to encode.
-            config: Styling configuration.
-            
-        Returns:
-            io.BytesIO: Buffer containing the PNG image.
-        """
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_M,
